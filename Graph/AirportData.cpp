@@ -6,11 +6,10 @@
 
 using namespace std;
 
-class AirportData {
-    private:
-
-
-    public:
+class AirportData
+{
+private:
+public:
     string origin;
     string dst;
     string originCity;
@@ -18,17 +17,23 @@ class AirportData {
     int dist;
     int cost;
 
-    AirportData(string o, string d, string oC, string dC, int dis, int cos): origin(o), dst(d), originCity(oC), dstCity(dC), dist(dis), cost(cos) {
-        
+    AirportData(string o, string d, string oC, string dC, int dis, int cos) : origin(o), dst(d), originCity(oC), dstCity(dC), dist(dis), cost(cos)
+    {
     }
 
-    AirportData() {
-        
+    AirportData()
+    {
     }
 
-    static vector<AirportData> load_file() {
-        //nays habitat
-    
+    bool operator==(const AirportData &other) const
+    {
+        return this->origin == other.origin;
+    }
+
+    static vector<AirportData> load_file()
+    {
+        // nays habitat
+
         ifstream file("airports.csv");
         string line;
         string temp;
@@ -43,25 +48,28 @@ class AirportData {
         vector<AirportData> data;
 
         int lineCounter = 0;
-        while (getline(file, line)) {
+        while (getline(file, line))
+        {
             lineCounter++;
-            if (lineCounter > 1) {
+            if (lineCounter > 1)
+            {
                 stringstream ss(line);
-                
-            
+
                 // Parse strings
                 getline(ss, temporigin, ',');
                 getline(ss, tempdst, ',');
                 getline(ss, temporiginCity, ',');
                 getline(ss, tempdstCity, ',');
 
-                // 
+                //
                 getline(ss, temp, ',');
-                if (!temp.empty()) tempdist = stoi(temp);
+                if (!temp.empty())
+                    tempdist = stoi(temp);
 
                 getline(ss, temp, ',');
-                if (!temp.empty()) tempcost = stoi(temp);
-                
+                if (!temp.empty())
+                    tempcost = stoi(temp);
+
                 data.push_back(AirportData(temporigin, tempdst, temporiginCity, tempdstCity, tempdist, tempcost));
             }
         }
