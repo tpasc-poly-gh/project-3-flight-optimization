@@ -1,58 +1,63 @@
-#include "Graph.hpp"
+#include "WeightedGraph.hpp"
 #include <iostream>
-#include <vector>
+#include <queue>
 
 template <typename T>
-int Graph<T>::getVertexIndex(const T& value) const {
-    int i = 0;
-    for (const auto& v : vertices) {
-        if (v == value) {
-            return i;
-        }
-        i++;
-    }
-
-    return -1; // No element
-}
-
-template <typename T>
-void Graph<T>::insertVertex(const T& value) {
-    if (getVertexIndex(value) != -1) {
-        std::cout << "insertVertex: vertex already exists\n";
+void WeightedGraph<T>::insertVertex(const T& v) {
+    if (getVertexIndex(v) != -1) {
+        std::cout << "insertVertex: vertex already exist\n";
         return;
     }
-    vertices.push_back(value);  // Add the new vertex
-    std::vector<int> tmp;
-    edges.push_back(tmp);       // Empty list of neighbours for the new vertex
+
+    vertices.push_back(v);
+    std::vector<int> tmp; // TODO
+    edges.push_back(tmp); //insert empty vector to the edges
 }
 
+// TODO
 template <typename T>
-void Graph<T>::insertEdge(const T& v1, const T& v2) {
+void WeightedGraph<T>::insertEdge(const T& v1, const T& v2) {
     int i1 = getVertexIndex(v1);
     int i2 = getVertexIndex(v2);
     if (i1 == -1 || i2 == -1) {
         std::cout << "insertEdge: incorrect vertices\n";
         return;
     }
-    edges[i1].push_back(i2);
-    if (i1 != i2) {
-        edges[i2].push_back(i1);
+
+    if (!hasEdge(i1, i2)) {
+        edges[i1].push_back(i2);
+        if (i1 != i2) {
+            edges[i2].push_back(i1);
+        }
     }
-}
+}   
 
 template <typename T>
-void Graph<T>::print() const {
+int WeightedGraph<T>::getVertexIndex(const T& ver) const {
+    for(int i = 0; i < vertices.size(); i++) {
+        if (vertices[i] == ver) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+// TODO
+template <typename T>
+void WeightedGraph<T>::print() const {
     for (int i = 0; i < vertices.size(); i++) {
         std::cout << "{ " << vertices[i] << ": ";
-        for (int j = 0; j < edges[i].size(); j++) {
-            std::cout << vertices[edges[i][j]] << " ";
+        for(int j = 0; j < edges[i].size(); j++) {
+            std::cout << vertices[edges[i][j]] << ' ';
         }
-        std::cout << "}\n";
+        std::cout << " }\n";
     }
 }
 
+// TODO
 template <typename T>
-bool Graph<T>::hasEdge(int i1, int i2) const {
+bool WeightedGraph<T>::hasEdge(int i1, int i2) const {
     if (i1 < 0 || i1 >= edges.size()) {
         return false;
     }
@@ -67,7 +72,7 @@ bool Graph<T>::hasEdge(int i1, int i2) const {
 }
 
 template <typename T>
-void Graph<T>::DFS() const {
+void WeightedGraph<T>::DFS() const {
     if (vertices.empty()) {
         return;
     }
@@ -75,8 +80,9 @@ void Graph<T>::DFS() const {
     DFS(0, visited);
 }
 
+// TODO
 template <typename T>
-void Graph<T>::DFS(int i, std::vector<bool>& visited) const {
+void WeightedGraph<T>::DFS(int i, std::vector<bool>& visited) const {
     visited[i] = true;
     std::cout << vertices[i] << " -> ";
 
@@ -88,8 +94,9 @@ void Graph<T>::DFS(int i, std::vector<bool>& visited) const {
     }
 }
 
+// TODO
 template <typename T>
-void Graph<T>::BFS(int start) const {
+void WeightedGraph<T>::BFS(int start) const {
     if (vertices.empty() || start < 0 || start >= vertices.size()) {
         return;
     }
@@ -119,7 +126,7 @@ void Graph<T>::BFS(int start) const {
 
 // TODO
 template <typename T>
-int Graph<T>::shortestPath(const T& src, const T& dest) const {
+int WeightedGraph<T>::shortestPath(const T& src, const T& dest) const {
     // Find indices
     int i_src = getVertexIndex(src);
     int i_dest = getVertexIndex(dest);

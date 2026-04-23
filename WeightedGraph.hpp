@@ -1,9 +1,10 @@
-
-#ifndef GRAPH_HPP
-#define GRAPH_HPP
+#ifndef WEIGHTEDGRAPH_HPP
+#define WEIGHTEDGRAPH_HPP
 #include <vector>
+
+
 template <typename T>
-class Graph {
+class WeightedGraph {
 public:
 
     void insertVertex(const T& v);
@@ -27,5 +28,6 @@ private:
     void DFS(int i, std::vector<bool>& visited) const;
 };
 
-#include "Graph.tpp"
+#include "WeightedGraph.tpp"
+
 #endif
