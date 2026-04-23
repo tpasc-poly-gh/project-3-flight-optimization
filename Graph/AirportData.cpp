@@ -42,7 +42,6 @@ class AirportData {
 
         vector<AirportData> data;
 
-        string line;
         int lineCounter = 0;
         while (getline(file, line)) {
             lineCounter++;
