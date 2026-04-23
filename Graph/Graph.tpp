@@ -1,6 +1,7 @@
 #include "Graph.hpp"
 #include <iostream>
 #include <vector>
+#include <queue>
 
 template <typename T>
 int Graph<T>::getVertexIndex(const T& value) const {

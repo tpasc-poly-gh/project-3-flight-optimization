@@ -1,8 +1,8 @@
-#include "WeightedGraph.hpp"
+#include "Graph.hpp"
 #include <string>
 
 int main(void) {
-    WeightedGraph<std::string> knowledge;
+    Graph<std::string> knowledge;
 
     knowledge.insertVertex("A");
     knowledge.insertVertex("B");
