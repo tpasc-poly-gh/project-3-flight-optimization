@@ -1,39 +1,23 @@
-#include "Graph.hpp"
-#include "queue/QueueDLL.hpp"
+#include "WeightedGraph.hpp"
 #include <iostream>
-#include <vector>
+#include "queue/QueueDLL.hpp"
 
-template <typename T>
-int Graph<T>::getVertexIndex(const T &value) const
+
+void WeightedGraph::insertVertex(const AirportData &v)
 {
-    int i = 0;
-    for (const auto &v : vertices)
+    if (getVertexIndex(v) != -1)
     {
-        if (v == value)
-        {
-            return i;
-        }
-        i++;
-    }
-
-    return -1; // No element
-}
-
-template <typename T>
-void Graph<T>::insertVertex(const T &value)
-{
-    if (getVertexIndex(value) != -1)
-    {
-        std::cout << "insertVertex: vertex already exists\n";
+        std::cout << "insertVertex: vertex already exist\n";
         return;
     }
-    vertices.push_back(value); // Add the new vertex
-    std::vector<int> tmp;
-    edges.push_back(tmp); // Empty list of neighbours for the new vertex
+
+    vertices.push_back(v);
+    std::vector<int> tmp; // TODO
+    edges.push_back(tmp); // insert empty vector to the edges
 }
 
-template <typename T>
-void Graph<T>::insertEdge(const T &v1, const T &v2)
+// TODO
+void WeightedGraph::insertEdge(const AirportData &v1, const AirportData &v2)
 {
     int i1 = getVertexIndex(v1);
     int i2 = getVertexIndex(v2);
@@ -42,29 +26,46 @@ void Graph<T>::insertEdge(const T &v1, const T &v2)
         std::cout << "insertEdge: incorrect vertices\n";
         return;
     }
-    edges[i1].push_back(i2);
-    if (i1 != i2)
+
+    if (!hasEdge(i1, i2))
     {
-        edges[i2].push_back(i1);
+        edges[i1].push_back(i2);
+        if (i1 != i2)
+        {
+            edges[i2].push_back(i1);
+        }
     }
 }
 
-template <typename T>
-void Graph<T>::print() const
+int WeightedGraph::getVertexIndex(const AirportData &ver) const
 {
     for (int i = 0; i < vertices.size(); i++)
     {
-        std::cout << "{ " << vertices[i] << ": ";
+        if (vertices[i] == ver)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+// TODO
+void WeightedGraph::print() const
+{
+    for (int i = 0; i < vertices.size(); i++)
+    {
+        std::cout << "{ " << vertices[i].origin << ": ";
         for (int j = 0; j < edges[i].size(); j++)
         {
-            std::cout << vertices[edges[i][j]] << " ";
+            std::cout << vertices[edges[i][j]].origin << ' ';
         }
-        std::cout << "}\n";
+        std::cout << " }\n";
     }
 }
 
-template <typename T>
-bool Graph<T>::hasEdge(int i1, int i2) const
+// TODO
+bool WeightedGraph::hasEdge(int i1, int i2) const
 {
     if (i1 < 0 || i1 >= edges.size())
     {
@@ -82,8 +83,7 @@ bool Graph<T>::hasEdge(int i1, int i2) const
     return false;
 }
 
-template <typename T>
-void Graph<T>::DFS() const
+void WeightedGraph::DFS() const
 {
     if (vertices.empty())
     {
@@ -93,11 +93,11 @@ void Graph<T>::DFS() const
     DFS(0, visited);
 }
 
-template <typename T>
-void Graph<T>::DFS(int i, std::vector<bool> &visited) const
+// TODO
+void WeightedGraph::DFS(int i, std::vector<bool> &visited) const
 {
     visited[i] = true;
-    std::cout << vertices[i] << " -> ";
+    std::cout << vertices[i].origin << " -> ";
 
     // Look through all the neighbours
     for (int j : edges[i])
@@ -109,8 +109,8 @@ void Graph<T>::DFS(int i, std::vector<bool> &visited) const
     }
 }
 
-template <typename T>
-void Graph<T>::BFS(int start) const
+// TODO
+void WeightedGraph::BFS(int start) const
 {
     if (vertices.empty() || start < 0 || start >= vertices.size())
     {
@@ -142,8 +142,7 @@ void Graph<T>::BFS(int start) const
 }
 
 // TODO
-template <typename T>
-int Graph<T>::shortestPath(const T &src, const T &dest) const
+int WeightedGraph::shortestPath(const AirportData &src, const AirportData &dest) const
 {
     // Find indices
     int i_src = getVertexIndex(src);
@@ -192,4 +191,8 @@ int Graph<T>::shortestPath(const T &src, const T &dest) const
     }
 
     return -1; // No path exists
+}
+
+bool WeightedGraph::isConnected() const {
+    return true;
 }

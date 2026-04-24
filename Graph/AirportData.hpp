@@ -1,3 +1,6 @@
+#ifndef AIRPORTDATA_HPP
+#define AIRPORTDATA_HPP
+
 #include <string>
 #include <fstream>
 #include <vector>
@@ -28,6 +31,12 @@ public:
     bool operator==(const AirportData &other) const
     {
         return this->origin == other.origin;
+    }
+
+    friend ostream& operator<<(ostream& os, const AirportData& dt)
+    {
+        os << dt.origin;
+        return os;
     }
 
     static vector<AirportData> load_file()
@@ -78,3 +87,5 @@ public:
         return data;
     }
 };
+
+#endif
