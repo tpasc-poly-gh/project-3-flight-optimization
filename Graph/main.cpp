@@ -15,7 +15,10 @@ int main(void)
 
     for (const AirportData &ad : airports)
     {
-        adGraph.insertVertex(ad);
+        if (adGraph.getVertexIndex(ad) == -1)
+        {
+            adGraph.insertVertex(ad);
+        }
     }
 
     for (const AirportData &ad : airports)

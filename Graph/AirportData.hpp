@@ -33,7 +33,7 @@ public:
         return this->origin == other.origin;
     }
 
-    friend ostream& operator<<(ostream& os, const AirportData& dt)
+    friend ostream &operator<<(ostream &os, const AirportData &dt)
     {
         os << dt.origin;
         return os;
@@ -55,7 +55,6 @@ public:
         vector<vector<string>> columns;
 
         vector<AirportData> data;
-
         int lineCounter = 0;
         while (getline(file, line))
         {
@@ -67,8 +66,16 @@ public:
                 // Parse strings
                 getline(ss, temporigin, ',');
                 getline(ss, tempdst, ',');
+
                 getline(ss, temporiginCity, ',');
+                getline(ss, temporiginCity, ',');
+
+                temporiginCity = temporiginCity.substr(1, temporiginCity.size() - 1);
+
                 getline(ss, tempdstCity, ',');
+                getline(ss, tempdstCity, ',');
+
+                tempdstCity = tempdstCity.substr(1, tempdstCity.size() - 1);
 
                 //
                 getline(ss, temp, ',');
@@ -82,6 +89,7 @@ public:
                 data.push_back(AirportData(temporigin, tempdst, temporiginCity, tempdstCity, tempdist, tempcost));
             }
         }
+        
         file.close();
 
         return data;
