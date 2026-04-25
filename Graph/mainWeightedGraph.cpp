@@ -1,40 +1,28 @@
 #include "WeightedGraph.hpp"
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
-int main(void) {
-    WeightedGraph<std::string> knowledge;
+int main() {
+    WeightedGraph<std::string> graph;
+    std::ifstream file("airports.csv");
+    std::string line, origin, dest, oCity, dCity, distStr, costStr;
 
-    knowledge.insertVertex("A");
-    knowledge.insertVertex("B");
-    knowledge.insertVertex("C");
-    knowledge.insertVertex("D");
-    knowledge.insertVertex("E");
-    knowledge.insertVertex("F");
-    knowledge.insertVertex("G");
-    knowledge.insertVertex("S");
-    knowledge.insertVertex("H");
+    // Skip the header line
+    std::getline(file, line);
 
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+        std::getline(ss, origin, ',');
+        std::getline(ss, dest, ',');
+        // ... parse city names ...
+        std::getline(ss, distStr, ',');
+        std::getline(ss, costStr, ',');
 
-    // TODO
-    knowledge.insertEdge("A", "B");
-    knowledge.insertEdge("A", "S");
-    knowledge.insertEdge("C", "S");
-    knowledge.insertEdge("G", "S");
-    knowledge.insertEdge("C", "F");
-    knowledge.insertEdge("C", "E");
-    knowledge.insertEdge("C", "D");
-    knowledge.insertEdge("E", "H");
-    knowledge.insertEdge("G", "H");
-    knowledge.insertEdge("G", "F");
-    
-
-    knowledge.print();
-    knowledge.DFS();
-
-    knowledge.BFS();
-    
-    std::cout << "\nA, F " << knowledge.shortestPath("A", "F") << std::endl;
-    std::cout << "A, D " << knowledge.shortestPath("A", "D") << std::endl;
-
+        graph.insertVertex(origin);
+        graph.insertVertex(dest);
+        graph.insertEdge(origin, dest, std::stoi(distStr), std::stoi(costStr));
+    }
     return 0;
 }
