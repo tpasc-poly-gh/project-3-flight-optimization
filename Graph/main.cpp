@@ -4,6 +4,7 @@
 #include <vector>
 #include "AirportData.hpp"
 #include <iostream>
+#include "implementations.cpp"
 
 int main(void)
 {
@@ -32,26 +33,45 @@ int main(void)
         }
     }
 
-    adGraph.print();
+    string command;
 
-    string origin;
-    string destination;
+    while (command != "exit")
+    {
+        cout << "Enter command (help for commands):";
 
-    cout << "\nEnter origin airport code: ";
-    cin >> origin;
+        cin >> command;
 
-    cout << "Enter destination airport code: ";
-    cin >> destination;
+        if (command == "help")
+        {
+            cout << "print1: (Prints the available airports for use)" << endl;
+            cout << "print2: (Prints the available airports and their connections)" << endl;
+            cout << "p2p: (Finds the shortest distance path between an origin airport and destination airport)" << endl;
+        }
+        else if (command == "p2p")
+        {
+            shortestPortToPort(adGraph);
+        }
+        else if (command == "print1")
+        {
+            for (int i = 0; i < adGraph.vertices.size(); i++)
+            {
+                cout << adGraph.vertices[i];
 
-    AirportData src;
-    AirportData dest;
-
-    src.origin = origin;
-    dest.origin = destination;
-
-    adGraph.shortestPath(src, dest);
-
-    cout << "\nFin\n";
+                if (i < adGraph.vertices.size() - 1)
+                {
+                    cout << ",";
+                }
+                else
+                {
+                    cout << endl;
+                }
+            }
+        }
+        else if (command == "print2")
+        {
+            adGraph.print();
+        }
+    }
 
     return 0;
 }
