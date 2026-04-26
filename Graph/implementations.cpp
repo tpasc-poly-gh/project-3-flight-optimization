@@ -15,7 +15,7 @@ void strToUpper(string &s)
     }
 }
 
-void shortestPortToPort(WeightedGraph adGraph)
+void shortestPortToPort(WeightedGraph &adGraph)
 {
     string origin;
     string destination;
@@ -36,4 +36,63 @@ void shortestPortToPort(WeightedGraph adGraph)
     dest.origin = destination;
 
     adGraph.shortestPath(src, dest);
+}
+
+WeightedGraph createUndirected(WeightedGraph &adGraph)
+{
+    WeightedGraph uAdGraph;
+
+    uAdGraph.vertices = adGraph.vertices;
+    uAdGraph.edges.resize(adGraph.vertices.size());
+
+    std::vector<std::vector<bool>> visitedMat(adGraph.vertices.size(), std::vector<bool>(adGraph.vertices.size(), false));
+
+    for (int u = 0; u < adGraph.edges.size(); u++)
+    {
+        for (const Edge &edge : adGraph.edges[u])
+        {
+            int v = edge.to;
+
+            if (visitedMat[u][v] || visitedMat[v][u])
+                continue;
+
+            visitedMat[u][v] = true;
+            visitedMat[v][u] = true;
+
+            int costUV = edge.cost;
+            int costVU = -1;
+
+            // Chk reversed edges also
+            for (const Edge &revE : adGraph.edges[v])
+            {
+                if (revE.to == u)
+                {
+                    costVU = revE.cost;
+                    break;
+                }
+            }
+
+            int finCost;
+            if (costVU == -1)
+            {
+                finCost = costUV;
+            }
+            else
+            {
+                if (costUV < costVU)
+                {
+                    finCost = costUV;
+                }
+                else
+                {
+                    finCost = costVU;
+                }
+            }
+
+            uAdGraph.edges[u].push_back(Edge(v, 0, finCost));
+            uAdGraph.edges[v].push_back(Edge(u, 0, finCost));
+        }
+    }
+
+    return uAdGraph;
 }
