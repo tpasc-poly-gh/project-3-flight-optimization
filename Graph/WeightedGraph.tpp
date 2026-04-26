@@ -12,29 +12,26 @@ void WeightedGraph::insertVertex(const AirportData &v)
     }
 
     vertices.push_back(v);
-    std::vector<int> tmp; // TODO
-    edges.push_back(tmp); // insert empty vector to the edges
+    std::vector<Edge> tmp; 
+    edges.push_back(tmp); 
 }
 
-// TODO
-void WeightedGraph::insertEdge(const AirportData &v1, const AirportData &v2)
+void WeightedGraph::insertEdge(const AirportData &v1, const AirportData &v2, int dist, int cost)
 {
     int i1 = getVertexIndex(v1);
     int i2 = getVertexIndex(v2);
+
+    if (i1 != -1 && i2 != -1 && !hasEdge(i1, i2)) 
+    {
+        edges[i1].push_back(Edge(i2, dist, cost));
+    }
+
     if (i1 == -1 || i2 == -1)
     {
         std::cout << "insertEdge: incorrect vertices\n";
         return;
     }
 
-    if (!hasEdge(i1, i2))
-    {
-        edges[i1].push_back(i2);
-        if (i1 != i2)
-        {
-            edges[i2].push_back(i1);
-        }
-    }
 }
 
 int WeightedGraph::getVertexIndex(const AirportData &ver) const
@@ -50,7 +47,7 @@ int WeightedGraph::getVertexIndex(const AirportData &ver) const
     return -1;
 }
 
-// TODO
+
 void WeightedGraph::print() const
 {
     for (int i = 0; i < vertices.size(); i++)
@@ -58,13 +55,12 @@ void WeightedGraph::print() const
         std::cout << "{ " << vertices[i].origin << ": ";
         for (int j = 0; j < edges[i].size(); j++)
         {
-            std::cout << vertices[edges[i][j]].origin << ' ';
+            std::cout << vertices[edges[i][j].to].origin << ' ';
         }
         std::cout << " }\n";
     }
 }
 
-// TODO
 bool WeightedGraph::hasEdge(int i1, int i2) const
 {
     if (i1 < 0 || i1 >= edges.size())
@@ -72,9 +68,9 @@ bool WeightedGraph::hasEdge(int i1, int i2) const
         return false;
     }
 
-    for (int i : edges[i1])
+    for (const auto& edge : edges[i1])
     {
-        if (i == i2)
+        if (edge.to == i2)
         {
             return true;
         }
@@ -93,23 +89,21 @@ void WeightedGraph::DFS() const
     DFS(0, visited);
 }
 
-// TODO
 void WeightedGraph::DFS(int i, std::vector<bool> &visited) const
 {
     visited[i] = true;
     std::cout << vertices[i].origin << " -> ";
 
     // Look through all the neighbours
-    for (int j : edges[i])
+    for (const auto& edge : edges[i])
     {
-        if (!visited[j])
+        if (!visited[edge.to])
         {
-            DFS(j, visited);
+            DFS(edge.to, visited);
         }
     }
 }
 
-// TODO
 void WeightedGraph::BFS(int start) const
 {
     if (vertices.empty() || start < 0 || start >= vertices.size())
@@ -130,67 +124,78 @@ void WeightedGraph::BFS(int start) const
         where_to_go.dequeue();
 
         // Explore the neighbors
-        for (int j : edges[cur])
+        for (const auto& edge : edges[cur])
         {
-            if (!discovered[j])
+            if (!discovered[edge.to])
             {
-                where_to_go.enqueue(j);
-                discovered[j] = true;
+                where_to_go.enqueue(edge.to);
+                discovered[edge.to] = true;
             }
         }
     }
 }
 
-// TODO
 int WeightedGraph::shortestPath(const AirportData &src, const AirportData &dest) const
 {
-    // Find indices
     int i_src = getVertexIndex(src);
     int i_dest = getVertexIndex(dest);
 
-    // Check edge case
     if (i_src == -1 || i_dest == -1)
     {
-        std::cout << "shortestPath: incorrect indices";
+        std::cout << "shortestPath: incorrect airport(s)\n";
         return -1;
     }
-    if (i_src == i_dest)
-    {
-        return 0;
-    }
-    // Create distances vector
-    std::vector<int> distances(vertices.size()); // distances from source to all other nodes
-    // Set initial distances
-    for (int i = 0; i < distances.size(); i++)
-    {
-        distances[i] = (i == i_src) ? 0 : -1;
-    }
 
-    // Perform BFS and update distances
-    QueueDLL<int> q;
-    q.enqueue(i_src);
+    const int INF = 2147483647;
+    std::vector<int> distances(vertices.size(), INF);
+    std::vector<int> previous(vertices.size(), -1);
 
-    while (!q.empty())
+    distances[i_src] = 0;
+
+    PriorityQueue<std::pair<int, int>> pq;
+    pq.push({0, i_src});
+
+    while (!pq.empty())
     {
-        int cur = q.front();
-        q.dequeue();
+        int d = pq.top().first;
+        int u = pq.top().second;
+        pq.pop();
 
-        // Check the neighbors of current node
-        for (int i : edges[cur])
+        if (d > distances[u]) continue;
+
+        for (const auto& edge : edges[u])
         {
-            if (distances[i] == -1)
+            if (distances[u] != INF && distances[u] + edge.distance < distances[edge.to])
             {
-                distances[i] = distances[cur] + 1;
-                q.enqueue(i);
-            }
-            if (i == i_dest)
-            {
-                return distances[i];
+                distances[edge.to] = distances[u] + edge.distance;
+                previous[edge.to] = u;
+                pq.push({distances[edge.to], edge.to});
             }
         }
     }
 
-    return -1; // No path exists
+    if (distances[i_dest] == INF)
+    {
+        std::cout << "No path exists from " << src.origin << " to " << dest.origin << ".\n";
+        return -1;
+    }
+
+    std::vector<int> path;
+    for (int at = i_dest; at != -1; at = previous[at])
+    {
+        path.push_back(at);
+    }
+
+    std::cout << "Shortest path by distance: ";
+    for (int i = path.size() - 1; i >= 0; i--)
+    {
+        std::cout << vertices[path[i]].origin;
+        if (i != 0) std::cout << " -> ";
+    }
+
+    std::cout << "\nTotal distance: " << distances[i_dest] << "\n";
+
+    return distances[i_dest];
 }
 
 bool WeightedGraph::isConnected() const {

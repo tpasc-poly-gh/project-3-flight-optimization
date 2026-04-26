@@ -25,16 +25,33 @@ int main(void)
     {
         for (const AirportData &adOther : airports)
         {
-            if (ad.dst == adOther.dst)
+            if (ad.dst == adOther.origin)
             {
-                adGraph.insertEdge(ad, adOther);
+                adGraph.insertEdge(ad, adOther, ad.dist, ad.cost);
             }
         }
     }
 
     adGraph.print();
 
-    cout << "Fin";
+    string origin;
+    string destination;
+
+    cout << "\nEnter origin airport code: ";
+    cin >> origin;
+
+    cout << "Enter destination airport code: ";
+    cin >> destination;
+
+    AirportData src;
+    AirportData dest;
+
+    src.origin = origin;
+    dest.origin = destination;
+
+    adGraph.shortestPath(src, dest);
+
+    cout << "\nFin\n";
 
     return 0;
 }
