@@ -45,6 +45,7 @@ int main(void)
         {
             cout << "print1: (Prints the available airports for use)" << endl;
             cout << "print2: (Prints the available airports and their connections)" << endl;
+            cout << "printd: (Writes graph debugging out to dbg_graph.dot)" << endl;
             cout << "p2p: (Finds the shortest distance path between an origin airport and destination airport)" << endl;
         }
         else if (command == "p2p")
@@ -70,6 +71,32 @@ int main(void)
         else if (command == "print2")
         {
             adGraph.print();
+        }
+        else if (command == "printd")
+        {
+            using namespace std;
+
+            ofstream out("dbg_graph.dot");
+
+            out << "digraph G {" << endl;
+
+            for (int i = 0; i < adGraph.vertices.size(); i++)
+            {
+                for (int j = 0; j < adGraph.edges[i].size(); j++)
+                {
+                    out << "    "
+                        << adGraph.vertices[i].origin
+                        << " -> "
+                        << adGraph.vertices[adGraph.edges[i][j].to].origin
+                        << ";" << endl;
+                }
+            }
+
+            out << "}" << endl;
+
+            out.close();
+
+            cout << "Wrote contents to dbg_graph.dot" << endl;
         }
     }
 

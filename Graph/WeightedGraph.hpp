@@ -28,6 +28,7 @@ class WeightedGraph
 {
 public:
     std::vector<AirportData> vertices;
+    std::vector<std::vector<Edge>> edges;
     void insertVertex(const AirportData &v);
     void insertEdge(const AirportData &v1, const AirportData &v2, int dist, int cost);
     void print() const;
@@ -39,8 +40,6 @@ public:
     int getVertexIndex(const AirportData &vs) const;
 
 private:
-    std::vector<std::vector<Edge>> edges;
-
     bool hasEdge(int i1, int i2) const;
     void DFS(int i, std::vector<bool> &visited) const;
 };
