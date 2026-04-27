@@ -67,6 +67,7 @@
 //     return res;
 // }
 
+<<<<<<< HEAD
 // template <typename T>
 // void MinHeap<T>::percolateDown(int i) {
 //     int index = i;
@@ -100,3 +101,51 @@
 // bool MinHeap<T>::empty() const {
 //     return data.empty();
 // }
+=======
+template <typename T>
+T &MinHeap<T>::getMin() const
+{
+    return data.front();
+}
+
+template <typename T>
+void MinHeap<T>::percolateDown(int i)
+{
+    int index = i;
+    int size = data.size();
+
+    while (getLeftKidIndex(index) < size)
+    {
+        int left = getLeftKidIndex(index);
+        int right = getRightKidIndex(index);
+
+        int smallest = left;
+        // Has 2 kids
+        if (right < size && data[right] < data[left])
+        {
+            smallest = right;
+        }
+        if (data[index] < data[smallest])
+        {
+            break;
+        }
+        std::swap(data[index], data[smallest]);
+        index = smallest;
+    }
+}
+
+template <typename T>
+void MinHeap<T>::heapify()
+{
+    for (int i = getLastWithKidsIndex(); i >= 0; i--)
+    {
+        percolateDown(i);
+    }
+}
+
+template <typename T>
+bool MinHeap<T>::empty() const
+{
+    return data.empty();
+}
+>>>>>>> 8de351325b165aec693dfc7d8b55a6b83a8cdfab
