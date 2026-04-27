@@ -93,9 +93,9 @@ public:
         return state;
     }
 
-    static vector<AirportData> load_file()
+    static vector<AirportData> load_file(string fName)
     {
-        ifstream file("airports.csv");
+        ifstream file(fName);
         string line;
         vector<AirportData> data;
 
@@ -165,8 +165,7 @@ public:
                     tempDstCity,
                     tempDstState,
                     tempDist,
-                    tempCost
-                ));
+                    tempCost));
             }
         }
 

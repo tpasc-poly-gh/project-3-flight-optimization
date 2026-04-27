@@ -93,7 +93,7 @@ WeightedGraph createUndirected(WeightedGraph &adGraph)
     uAdGraph.vertices = adGraph.vertices;
     uAdGraph.edges.resize(adGraph.vertices.size());
 
-    std::vector<std::vector<bool>> visitedMat(adGraph.vertices.size(), std::vector<bool>(adGraph.vertices.size(), false));
+    vector<vector<bool>> visitedMat(adGraph.vertices.size(), vector<bool>(adGraph.vertices.size(), false));
 
     for (int u = 0; u < adGraph.edges.size(); u++)
     {
@@ -161,7 +161,7 @@ void mstPrims(WeightedGraph &adGraph)
 
     if (!adGraph.isConnected())
     {
-        cout << "Graph isn't connected; Can't form MST" << endl;
+        cout << "Graph isn't connected; Can't create MST" << endl;
         return;
     }
 
@@ -206,7 +206,81 @@ void mstPrims(WeightedGraph &adGraph)
     cout << "Total cost: " << totalCost << endl;
 }
 
-void msfKruskals(WeightedGraph adGraph)
+void msfKruskals(const WeightedGraph &g)
 {
-    cout << "unimplemented" << endl;
+    int vertLen = g.vertices.size();
+
+    vector<HeapEdge> allEdges;
+    for (int u = 0; u < vertLen; u++)
+    {
+        for (const Edge &edge : g.edges[u])
+        {
+            if (u < edge.to)
+            {
+                allEdges.push_back(HeapEdge(u, edge.to, edge.cost));
+            }
+        }
+    }
+
+    for (int i = 1; i < allEdges.size(); i++)
+    {
+        HeapEdge edge = allEdges[i];
+        int j = i - 1;
+
+        while (j >= 0 && allEdges[j].cost > edge.cost)
+        {
+            allEdges[j + 1] = allEdges[j];
+            j--;
+        }
+        allEdges[j + 1] = edge;
+    }
+
+    vector<int> comp(vertLen);
+    for (int i = 0; i < vertLen; i++)
+    {
+        comp[i] = i;
+    }
+
+    int totalCost = 0;
+
+    for (const HeapEdge &e : allEdges)
+    {
+        // chk not same
+        if (comp[e.from] != comp[e.to])
+        {
+            std::cout << g.vertices[e.from].origin << " - " << g.vertices[e.to].origin << " cost: " << e.cost << endl;
+            totalCost += e.cost;
+
+            int oldComp = comp[e.to];
+            int newComp = comp[e.from];
+
+            for (int i = 0; i < vertLen; i++)
+            {
+                if (comp[i] == oldComp)
+                {
+                    comp[i] = newComp;
+                }
+            }
+        }
+    }
+
+    int components = 0;
+    for (int i = 0; i < vertLen; i++)
+    {
+        if (comp[i] == i)
+        {
+            components++;
+        }
+    }
+
+    if (components == 1)
+    {
+        cout << "Minimum spanning tree" << endl;
+    }
+    else
+    {
+        cout << "Minimum spanning forest" << endl;
+    }
+
+    cout << "Total cost: " << totalCost << endl;
 }
