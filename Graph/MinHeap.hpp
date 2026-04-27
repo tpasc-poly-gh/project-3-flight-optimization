@@ -4,20 +4,24 @@
 #include <vector>
 
 template <typename T>
-class MinHeap {
+class MinHeap
+{
 public:
     // Constructors
     MinHeap();
-    MinHeap(const std::vector<T>& v);
+    MinHeap(const std::vector<T> &v);
 
-    void insert(const T& val);
+    void insert(const T &val);
     void print() const;
     bool empty() const;
 
+    T &getMin() const;
+
     T deleteMin();
+
 private:
     std::vector<T> data;
-    
+
     void heapify();
     void percolateUp();
     void percolateDown(int i = 0);

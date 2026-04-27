@@ -43,7 +43,7 @@ public:
     {
         // nays habitat
 
-        ifstream file("airports.csv");
+        ifstream file("connected_airports.csv");
         string line;
         string temp;
         string temporigin;
@@ -89,7 +89,7 @@ public:
                 data.push_back(AirportData(temporigin, tempdst, temporiginCity, tempdstCity, tempdist, tempcost));
             }
         }
-        
+
         file.close();
 
         return data;

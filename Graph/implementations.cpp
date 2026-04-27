@@ -2,6 +2,7 @@
 #include <string>
 #include "AirportData.hpp"
 #include "WeightedGraph.hpp"
+#include "MinHeap.hpp"
 
 using namespace std;
 
@@ -79,14 +80,7 @@ WeightedGraph createUndirected(WeightedGraph &adGraph)
             }
             else
             {
-                if (costUV < costVU)
-                {
-                    finCost = costUV;
-                }
-                else
-                {
-                    finCost = costVU;
-                }
+                finCost = costUV < costVU ? costUV : costVU;
             }
 
             uAdGraph.edges[u].push_back(Edge(v, 0, finCost));
@@ -95,4 +89,77 @@ WeightedGraph createUndirected(WeightedGraph &adGraph)
     }
 
     return uAdGraph;
+}
+
+class HeapEdge
+{
+public:
+    int from;
+    int to;
+    int cost;
+
+    HeapEdge(int f, int t, int c) : from(f), to(t), cost(c)
+    {
+    }
+
+    bool operator<(const HeapEdge &other) const
+    {
+        return cost < other.cost;
+    }
+};
+
+void mstPrims(WeightedGraph &adGraph)
+{
+    int vertLen = adGraph.vertices.size();
+
+    if (!adGraph.isConnected())
+    {
+        cout << "Graph isn't connected; Can't form MST" << endl;
+        return;
+    }
+
+    vector<bool> visited(vertLen, false);
+    vector<HeapEdge> edges;
+    MinHeap<HeapEdge> heap;
+    int totalCost = 0;
+
+    visited[0] = true;
+    for (const Edge &edge : adGraph.edges[0])
+    {
+        heap.insert(HeapEdge(0, edge.to, edge.cost));
+    }
+
+    while (!heap.empty() && edges.size() < vertLen - 1)
+    {
+        HeapEdge curr = heap.deleteMin();
+
+        if (visited[curr.to])
+        {
+            continue;
+        }
+
+        visited[curr.to] = true;
+        edges.push_back(curr);
+        totalCost += curr.cost;
+
+        for (const Edge &edge : adGraph.edges[curr.to])
+        {
+            if (!visited[edge.to])
+            {
+                heap.insert(HeapEdge(0, edge.to, edge.cost));
+            }
+        }
+    }
+
+    for (const HeapEdge &edge : edges)
+    {
+        cout << adGraph.vertices[edge.from] << " - " << adGraph.vertices[edge.to] << " cost: " << edge.cost << endl;
+    }
+
+    cout << "Total cost: " << totalCost << endl;
+}
+
+void msfKruskals(WeightedGraph adGraph)
+{
+    cout << "unimplemented" << endl;
 }
