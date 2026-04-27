@@ -317,10 +317,8 @@ void countTrafficCommand(WeightedGraph &adGraph) {
         rankingHeap.insert(at);
     }
 
-    cout << left << setw(12) << "Airport" 
-         << setw(10) << "Inbound" 
-         << setw(10) << "Outbound" 
-         << "Total Traffic" << endl;
+    cout << left << "Airport" 
+         << "Connections" << endl;
     cout << "-------------------------------------------------------" << endl;
 
     while (!rankingHeap.empty()) {
@@ -336,8 +334,6 @@ void countTrafficCommand(WeightedGraph &adGraph) {
 
         if (idx != -1) {
             cout << left << setw(12) << top.code 
-                 << setw(10) << inbound[idx] 
-                 << setw(10) << outbound[idx] 
                  << top.total << endl;
         }
     }
