@@ -194,7 +194,7 @@ void mstPrims(WeightedGraph &adGraph)
         {
             if (!visited[edge.to])
             {
-                heap.insert(HeapEdge(0, edge.to, edge.cost));
+                heap.insert(HeapEdge(curr.to, edge.to, edge.cost));
             }
         }
     }
@@ -249,7 +249,7 @@ void msfKruskals(const WeightedGraph &g)
         // chk not same
         if (comp[e.from] != comp[e.to])
         {
-            std::cout << g.vertices[e.from].origin << " - " << g.vertices[e.to].origin << " cost: " << e.cost << endl;
+            cout << g.vertices[e.from].origin << " - " << g.vertices[e.to].origin << " cost: " << e.cost << endl;
             totalCost += e.cost;
 
             int oldComp = comp[e.to];
