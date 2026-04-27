@@ -21,7 +21,7 @@ int main(void)
 {
     cout << "Project 3 Flight optimization" << endl;
 
-    string fName = "connected_airports.csv";
+    string fName = "airports.csv";
 
     cout << "Loading file: " << fName << endl;
 
@@ -96,6 +96,7 @@ int main(void)
         {
             adGraph = initGraph(airports);
             isUnd = false;
+            cout << "Reset to directed graph" << endl;
         }
         else if (command == "print1")
         {
