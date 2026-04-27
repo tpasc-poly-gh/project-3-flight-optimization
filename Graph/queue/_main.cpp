@@ -1,5 +1,5 @@
 #include "QueueDLL.hpp"
-#include "QueueDLL.cpp"
+#include "QueueDLL.tpp"
 
 #include <stdexcept>
 

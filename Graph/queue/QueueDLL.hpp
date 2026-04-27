@@ -8,10 +8,10 @@ template <typename T>
 class QueueDLL {
 public:
     
-    int         size() const; // TODO
+    int         size() const; 
     bool        empty() const;
     void        print() const;
-    void        clear(); // TODO
+    void        clear(); 
 
     void        enqueue(const T& val);
     // Throws std::out_of_range exception
