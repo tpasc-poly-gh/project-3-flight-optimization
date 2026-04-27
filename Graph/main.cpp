@@ -47,6 +47,7 @@ int main(void)
             cout << "state:     (Task #3; Finds shortest paths from an origin airport to all airports in a state)" << endl;
             cout << "stops:     (Task #4; Finds shortest path between airports with exactly N stops)" << endl;
             cout << "undirected:(Task #6; Converts graph to an undirected graph and stores it for use, must use 'reset' to revert back to weighted graph)" << endl;
+            cout << "count:     (Task #5, total number of flights to and from an airport in order)" << endl;
             cout << "mst:       (Task #7; Generate minimum spanning tree with prims algorithm)" << endl;
             cout << "msf:       (Task #8; Generate minimum spanning tree with kruskal's algorithm)" << endl;
             cout << "reset: (Reinitialize the directional graph)" << endl;
@@ -142,6 +143,11 @@ int main(void)
 
             cout << "Wrote contents to dbg_graph.dot" << endl;
         }
+
+        else if (command == "count") {
+            countTrafficCommand(adGraph);
+        }
+
         else if (command != "exit")
         {
             cout << "Unknown command" << endl;
