@@ -107,4 +107,6 @@ public:
     bool empty() const { return heap.empty(); }
 };
 
+#include"WeightedGraph.tpp"
+
 #endif
