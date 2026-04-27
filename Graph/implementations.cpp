@@ -3,6 +3,7 @@
 #include "AirportData.hpp"
 #include "WeightedGraph.hpp"
 #include "MinHeap.hpp"
+#include <iomanip>
 
 using namespace std;
 
@@ -283,4 +284,61 @@ void msfKruskals(const WeightedGraph &g)
     }
 
     cout << "Total cost: " << totalCost << endl;
+}
+
+struct AirportTraffic {
+    string code;
+    int total;
+
+    bool operator<(const AirportTraffic& other) const {
+        return total > other.total;
+    }
+};
+
+void countTrafficCommand(WeightedGraph &adGraph) {
+    int n = adGraph.vertices.size();
+    if (n == 0) return;
+
+    vector<int> inbound(n, 0);
+    vector<int> outbound(n, 0);
+
+    for (int i = 0; i < n; i++) {
+        outbound[i] = adGraph.edges[i].size();
+        for (auto &edge : adGraph.edges[i]) {
+            inbound[edge.to]++;
+        }
+    }
+
+    MinHeap<AirportTraffic> rankingHeap;
+    for (int i = 0; i < n; i++) {
+        AirportTraffic at;
+        at.code = adGraph.vertices[i].origin;
+        at.total = inbound[i] + outbound[i];
+        rankingHeap.insert(at);
+    }
+
+    cout << left << setw(12) << "Airport" 
+         << setw(10) << "Inbound" 
+         << setw(10) << "Outbound" 
+         << "Total Traffic" << endl;
+    cout << "-------------------------------------------------------" << endl;
+
+    while (!rankingHeap.empty()) {
+        AirportTraffic top = rankingHeap.deleteMin();
+        
+        int idx = -1;
+        for(int i = 0; i < n; i++) {
+            if(adGraph.vertices[i].origin == top.code) {
+                idx = i;
+                break;
+            }
+        }
+
+        if (idx != -1) {
+            cout << left << setw(12) << top.code 
+                 << setw(10) << inbound[idx] 
+                 << setw(10) << outbound[idx] 
+                 << top.total << endl;
+        }
+    }
 }
