@@ -4,9 +4,14 @@
 #include <vector>
 #include "AirportData.hpp"
 #include <iostream>
-#include "implementations.cpp"
 
 WeightedGraph initGraph(vector<AirportData> &airports);
+
+void strToUpper(std::string &s);
+void shortestPortToPort(WeightedGraph &adGraph);
+void shortestPathsToStateCommand(WeightedGraph &adGraph);
+void shortestPathWithStopsCommand(WeightedGraph &adGraph);
+WeightedGraph createUndirected(WeightedGraph &adGraph);
 
 int main(void)
 {
@@ -28,6 +33,8 @@ int main(void)
         if (command == "help")
         {
             cout << "p2p: (Finds the shortest distance path between an origin airport and destination airport)" << endl;
+            cout << "state: (Finds shortest paths from an origin airport to all airports in a state)" << endl;
+            cout << "stops: (Finds shortest path between airports with exactly N stops)" << endl;
             cout << "undirected: (Converts graph to an undirected graph and stores it for use, must use reset to reset to weighted graph)" << endl;
             cout << "reset: (Reinitialize the directional graph)" << endl;
             cout << "print1: (Prints the available airports for use)" << endl;
@@ -37,6 +44,14 @@ int main(void)
         else if (command == "p2p")
         {
             shortestPortToPort(adGraph);
+        }
+        else if (command == "state")
+        {
+            shortestPathsToStateCommand(adGraph);
+        }
+        else if (command == "stops")
+        {
+            shortestPathWithStopsCommand(adGraph);
         }
         else if (command == "undirected")
         {
