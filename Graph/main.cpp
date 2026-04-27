@@ -4,7 +4,7 @@
 #include <vector>
 #include "AirportData.hpp"
 #include <iostream>
-#include "implementations.cpp"
+// #include "implementations.cpp"
 
 WeightedGraph initGraph(vector<AirportData> &airports);
 void printUndirectedInfo(WeightedGraph &adGraph);
@@ -14,6 +14,8 @@ void shortestPortToPort(WeightedGraph &adGraph);
 void shortestPathsToStateCommand(WeightedGraph &adGraph);
 void shortestPathWithStopsCommand(WeightedGraph &adGraph);
 WeightedGraph createUndirected(WeightedGraph &adGraph);
+void mstPrims(WeightedGraph &adGraph);
+void msfKruskals(const WeightedGraph &g);
 
 int main(void)
 {
