@@ -11,26 +11,41 @@ using namespace std;
 
 class AirportData
 {
-private:
 public:
     string origin;
     string dst;
+
     string originCity;
+    string originState;
+
     string dstCity;
+    string dstState;
+
     int dist;
     int cost;
 
-    AirportData(string o, string d, string oC, string dC, int dis, int cos) : origin(o), dst(d), originCity(oC), dstCity(dC), dist(dis), cost(cos)
-    {
-    }
-
     AirportData()
     {
+        dist = 0;
+        cost = 0;
+    }
+
+    AirportData(string o, string d, string oC, string oS,
+                string dC, string dS, int dis, int cos)
+    {
+        origin = o;
+        dst = d;
+        originCity = oC;
+        originState = oS;
+        dstCity = dC;
+        dstState = dS;
+        dist = dis;
+        cost = cos;
     }
 
     bool operator==(const AirportData &other) const
     {
-        return this->origin == other.origin;
+        return origin == other.origin;
     }
 
     friend ostream &operator<<(ostream &os, const AirportData &dt)
@@ -39,59 +54,123 @@ public:
         return os;
     }
 
+    static string cleanCity(string city)
+    {
+        while (!city.empty() && city[0] == '"')
+        {
+            city.erase(0, 1);
+        }
+
+        while (!city.empty() && city[city.size() - 1] == '"')
+        {
+            city.pop_back();
+        }
+
+        return city;
+    }
+
+    static string getStateFromCity(string city)
+    {
+        int commaPos = city.find(',');
+
+        if (commaPos == string::npos)
+        {
+            return "";
+        }
+
+        string state = city.substr(commaPos + 1);
+
+        while (!state.empty() && state[0] == ' ')
+        {
+            state.erase(0, 1);
+        }
+
+        while (!state.empty() && state[state.size() - 1] == '"')
+        {
+            state.pop_back();
+        }
+
+        return state;
+    }
+
     static vector<AirportData> load_file()
     {
-        // nays habitat
-
-        ifstream file("connected_airports.csv");
+        ifstream file("airports.csv");
         string line;
-        string temp;
-        string temporigin;
-        string tempdst;
-        string temporiginCity;
-        string tempdstCity;
-        int tempdist;
-        int tempcost;
-        vector<vector<string>> columns;
-
         vector<AirportData> data;
+
         int lineCounter = 0;
+
         while (getline(file, line))
         {
             lineCounter++;
+
             if (lineCounter > 1)
             {
                 stringstream ss(line);
 
-                // Parse strings
-                getline(ss, temporigin, ',');
-                getline(ss, tempdst, ',');
+                string tempOrigin;
+                string tempDst;
 
-                getline(ss, temporiginCity, ',');
-                getline(ss, temporiginCity, ',');
+                string originCityPart1;
+                string originCityPart2;
 
-                temporiginCity = temporiginCity.substr(1, temporiginCity.size() - 1);
+                string dstCityPart1;
+                string dstCityPart2;
 
-                getline(ss, tempdstCity, ',');
-                getline(ss, tempdstCity, ',');
+                string tempOriginCity;
+                string tempDstCity;
 
-                tempdstCity = tempdstCity.substr(1, tempdstCity.size() - 1);
+                string tempOriginState;
+                string tempDstState;
 
-                //
+                string temp;
+                int tempDist = 0;
+                int tempCost = 0;
+
+                getline(ss, tempOrigin, ',');
+                getline(ss, tempDst, ',');
+
+                getline(ss, originCityPart1, ',');
+                getline(ss, originCityPart2, ',');
+
+                tempOriginCity = originCityPart1 + "," + originCityPart2;
+                tempOriginCity = cleanCity(tempOriginCity);
+                tempOriginState = getStateFromCity(tempOriginCity);
+
+                getline(ss, dstCityPart1, ',');
+                getline(ss, dstCityPart2, ',');
+
+                tempDstCity = dstCityPart1 + "," + dstCityPart2;
+                tempDstCity = cleanCity(tempDstCity);
+                tempDstState = getStateFromCity(tempDstCity);
+
                 getline(ss, temp, ',');
                 if (!temp.empty())
-                    tempdist = stoi(temp);
+                {
+                    tempDist = stoi(temp);
+                }
 
                 getline(ss, temp, ',');
                 if (!temp.empty())
-                    tempcost = stoi(temp);
+                {
+                    tempCost = stoi(temp);
+                }
 
-                data.push_back(AirportData(temporigin, tempdst, temporiginCity, tempdstCity, tempdist, tempcost));
+                data.push_back(AirportData(
+                    tempOrigin,
+                    tempDst,
+                    tempOriginCity,
+                    tempOriginState,
+                    tempDstCity,
+                    tempDstState,
+                    tempDist,
+                    tempCost
+                ));
             }
         }
 
         file.close();
-
         return data;
     }
 };

@@ -39,6 +39,53 @@ void shortestPortToPort(WeightedGraph &adGraph)
     adGraph.shortestPath(src, dest);
 }
 
+void shortestPathsToStateCommand(WeightedGraph &adGraph)
+{
+    string origin;
+    string state;
+
+    cout << "\nEnter origin airport code: ";
+    cin >> origin;
+
+    cout << "Enter destination state abbreviation: ";
+    cin >> state;
+
+    strToUpper(origin);
+    strToUpper(state);
+
+    AirportData src;
+    src.origin = origin;
+
+    adGraph.shortestPathsToState(src, state);
+}
+
+void shortestPathWithStopsCommand(WeightedGraph &adGraph)
+{
+    string origin;
+    string destination;
+    int stops;
+
+    cout << "\nEnter origin airport code: ";
+    cin >> origin;
+
+    cout << "Enter destination airport code: ";
+    cin >> destination;
+
+    cout << "Enter number of stops: ";
+    cin >> stops;
+
+    strToUpper(origin);
+    strToUpper(destination);
+
+    AirportData src;
+    AirportData dest;
+
+    src.origin = origin;
+    dest.origin = destination;
+
+    adGraph.shortestPathWithStops(src, dest, stops);
+}
+
 WeightedGraph createUndirected(WeightedGraph &adGraph)
 {
     WeightedGraph uAdGraph;

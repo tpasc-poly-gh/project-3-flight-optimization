@@ -201,3 +201,135 @@ int WeightedGraph::shortestPath(const AirportData &src, const AirportData &dest)
 bool WeightedGraph::isConnected() const {
     return true;
 }
+
+void WeightedGraph::shortestPathsToState(const AirportData& src, const std::string& state) const
+{
+    int i_src = getVertexIndex(src);
+
+    if (i_src == -1)
+    {
+        std::cout << "Origin airport not found.\n";
+        return;
+    }
+
+    bool foundAny = false;
+
+    for (int i = 0; i < vertices.size(); i++)
+    {
+        if (vertices[i].originState == state)
+        {
+            int distance = shortestPath(src, vertices[i]);
+
+            if (distance != -1)
+            {
+                foundAny = true;
+            }
+        }
+    }
+
+    if (!foundAny)
+    {
+        std::cout << "No paths found from " << src.origin 
+                  << " to airports in " << state << ".\n";
+    }
+}
+
+void WeightedGraph::shortestPathWithStops(const AirportData& src, const AirportData& dest, int stops) const
+{
+    int i_src = getVertexIndex(src);
+    int i_dest = getVertexIndex(dest);
+
+    if (i_src == -1 || i_dest == -1)
+    {
+        std::cout << "Origin or destination airport not found.\n";
+        return;
+    }
+
+    int requiredEdges = stops + 1;
+
+    int bestDistance = 2147483647;
+    int bestCost = 2147483647;
+
+    std::vector<int> currentPath;
+    std::vector<int> bestPath;
+
+    currentPath.push_back(i_src);
+
+    findPathWithStopsHelper(
+        i_src,
+        i_dest,
+        requiredEdges,
+        0,
+        0,
+        currentPath,
+        bestPath,
+        bestDistance,
+        bestCost
+    );
+
+    if (bestPath.empty())
+    {
+        std::cout << "No path exists from " << src.origin
+                  << " to " << dest.origin
+                  << " with exactly " << stops << " stops.\n";
+        return;
+    }
+
+    std::cout << "Shortest path with exactly " << stops << " stops: ";
+
+    for (int i = 0; i < bestPath.size(); i++)
+    {
+        std::cout << vertices[bestPath[i]].origin;
+        if (i != bestPath.size() - 1)
+        {
+            std::cout << " -> ";
+        }
+    }
+
+    std::cout << "\nTotal distance: " << bestDistance;
+    std::cout << "\nTotal cost: " << bestCost << "\n";
+}
+
+void WeightedGraph::findPathWithStopsHelper(
+    int current,
+    int destination,
+    int edgesLeft,
+    int currentDistance,
+    int currentCost,
+    std::vector<int>& currentPath,
+    std::vector<int>& bestPath,
+    int& bestDistance,
+    int& bestCost
+) const
+{
+    if (edgesLeft == 0)
+    {
+        if (current == destination && currentDistance < bestDistance)
+        {
+            bestDistance = currentDistance;
+            bestCost = currentCost;
+            bestPath = currentPath;
+        }
+
+        return;
+    }
+
+    for (const auto& edge : edges[current])
+    {
+        currentPath.push_back(edge.to);
+
+        findPathWithStopsHelper(
+            edge.to,
+            destination,
+            edgesLeft - 1,
+            currentDistance + edge.distance,
+            currentCost + edge.cost,
+            currentPath,
+            bestPath,
+            bestDistance,
+            bestCost
+        );
+
+        currentPath.pop_back();
+    }
+}

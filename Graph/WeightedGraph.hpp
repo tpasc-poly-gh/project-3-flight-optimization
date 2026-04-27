@@ -1,6 +1,7 @@
 #ifndef WEIGHTEDGRAPH_HPP
 #define WEIGHTEDGRAPH_HPP
 #include <vector>
+#include <string>
 #include "AirportData.hpp"
 
 class Edge
@@ -39,9 +40,17 @@ public:
     bool isConnected() const;
     int getVertexIndex(const AirportData &vs) const;
 
+    void shortestPathsToState(const AirportData& src, const std::string& state) const;
+
+    void shortestPathWithStops(const AirportData& src, const AirportData& dest, int stops) const;
 private:
     bool hasEdge(int i1, int i2) const;
     void DFS(int i, std::vector<bool> &visited) const;
+    void findPathWithStopsHelper(
+    int current,
+    int destination,
+    int edgesLeft,
+    int currentDistance, int currentCost, std::vector<int>& currentPath, std::vector<int>& bestPath, int& bestDistance, int& bestCost) const;
 };
 
 template <typename T>
@@ -98,6 +107,6 @@ public:
     bool empty() const { return heap.empty(); }
 };
 
-#include "WeightedGraph.tpp"
+#include"WeightedGraph.tpp"
 
 #endif

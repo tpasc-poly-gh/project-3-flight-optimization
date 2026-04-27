@@ -4,10 +4,14 @@
 #include <vector>
 #include "AirportData.hpp"
 #include <iostream>
-#include "implementations.cpp"
 
 WeightedGraph initGraph(vector<AirportData> &airports);
-void printUndirectedInfo(WeightedGraph &adGraph);
+
+void strToUpper(std::string &s);
+void shortestPortToPort(WeightedGraph &adGraph);
+void shortestPathsToStateCommand(WeightedGraph &adGraph);
+void shortestPathWithStopsCommand(WeightedGraph &adGraph);
+WeightedGraph createUndirected(WeightedGraph &adGraph);
 
 int main(void)
 {
@@ -22,51 +26,46 @@ int main(void)
 
     while (command != "exit")
     {
-        cout << "Enter command (help for commands):" << endl;
+        cout << "Enter command (help for commands):";
 
         cin >> command;
 
-        cout << "========================" << endl;
-
         if (command == "help")
         {
-            cout << "p2p: (Task #2; Finds the shortest distance path between an origin airport and destination airport)" << endl;
-            cout << "undirected: (Task #6; Converts graph to an undirected graph and stores it for use, must use reset to reset to weighted graph)" << endl;
-            cout << "mst: (Task #7; Generate minimum spanning tree with prims algorithm)" << endl;
-            cout << "msf: (Task #8; Generate minimum spanning tree with kruskal's algorithm)" << endl;
+            cout << "p2p: (Finds the shortest distance path between an origin airport and destination airport)" << endl;
+            cout << "state: (Finds shortest paths from an origin airport to all airports in a state)" << endl;
+            cout << "stops: (Finds shortest path between airports with exactly N stops)" << endl;
+            cout << "undirected: (Converts graph to an undirected graph and stores it for use, must use reset to reset to weighted graph)" << endl;
+            cout << "reset: (Reinitialize the directional graph)" << endl;
             cout << "print1: (Prints the available airports for use)" << endl;
             cout << "print2: (Prints the available airports and their connections)" << endl;
-            cout << "reset: (Reinitialize the directional graph)" << endl;
             cout << "printd: (Writes graph debugging out to dbg_graph.dot)" << endl;
         }
         else if (command == "p2p")
         {
             shortestPortToPort(adGraph);
         }
+        else if (command == "state")
+        {
+            shortestPathsToStateCommand(adGraph);
+        }
+        else if (command == "stops")
+        {
+            shortestPathWithStopsCommand(adGraph);
+        }
         else if (command == "undirected")
         {
             if (isUnd)
             {
-                cout << "Graph already undirected!" << endl;
+                cout << "Graph already undirected" << endl;
 
-                printUndirectedInfo(adGraph);
                 continue;
             }
 
             adGraph = createUndirected(adGraph);
-
             isUnd = true;
 
-            printUndirectedInfo(adGraph);
-        }
-        else if (command == "mst")
-        {
-            WeightedGraph nGraph = isUnd ? adGraph : createUndirected(adGraph);
-            mstPrims(adGraph);
-        }
-        else if (command == "msf")
-        {
-            msfKruskals(adGraph);
+            cout << "Created and stored undirected graph" << endl;
         }
         else if (command == "reset")
         {
@@ -119,20 +118,11 @@ int main(void)
         }
         else if (command != "exit")
         {
-            cout << "Unknown command" << endl;
+            cout << "Unknown command :(";
         }
-
-        cout << "========================" << endl;
     }
 
     return 0;
-}
-
-void printUndirectedInfo(WeightedGraph &adGraph)
-{
-    cout << "Undirected graph isConnected: " << (adGraph.isConnected() == 1 ? "yes" : "no") << endl;
-    cout << "Created and stored undirected graph" << endl;
-    cout << "Use print1 or print2 to print out available airports or available airports and their connections" << endl;
 }
 
 WeightedGraph initGraph(vector<AirportData> &airports)
