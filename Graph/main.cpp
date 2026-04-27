@@ -16,6 +16,7 @@ void shortestPathWithStopsCommand(WeightedGraph &adGraph);
 WeightedGraph createUndirected(WeightedGraph &adGraph);
 void mstPrims(WeightedGraph &adGraph);
 void msfKruskals(const WeightedGraph &g);
+void countTrafficCommand(WeightedGraph &adGraph);
 
 int main(void)
 {
